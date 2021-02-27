@@ -7,6 +7,9 @@ away from an iMac that will be subjected to target display mode (TDM).
 ## Requirements
 
 - [blueutil](https://github.com/toy/blueutil)
+  - Installed on both local and remote machines.
+- An established SSH key pair between local and remote machines.
+  - The script will attempt to `ssh <remote-host>`.
 
 ## Usage
 
