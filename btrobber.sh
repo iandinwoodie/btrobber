@@ -7,14 +7,19 @@
 function release
 {
   local remote_host="$1"
-  # Ensure local bluetooth is off.
-  echo $(/usr/local/bin/blueutil off)
-  # Enable remote bluetooth.
-  ssh "${remote_host}" '/usr/local/bin/blueutil -p 1'
+
+  echo "Disabling local bluetooth."
+  /usr/local/bin/blueutil off || return 1
+
+  echo "Enabling bluetooth for ${remote_host}."
+  ssh "${remote_host}" '/usr/local/bin/blueutil -p 1' || return 1
   # Wait 30 seconds for devices to connect with remote machine.
-  echo $(/bin/sleep 30)
-  # Reenable local bluetooth.
-  echo $(/usr/local/bin/blueutil on)
+  /bin/sleep 30
+
+  echo "Re-enabling local bluetooth."
+  /usr/local/bin/blueutil on || return 1
+
+  return 0
 }
 
 # Disable bluetooth on the remote machine and enable it on the local machine so
@@ -24,12 +29,19 @@ function release
 function steal
 {
   local remote_host="$1"
-  # Ensure local bluetooth is off.
-  echo $(/usr/local/bin/blueutil off)
-  # Disable remote bluetooth.
-  ssh "${remote_host}" '/usr/local/bin/blueutil -p 0'
-  # Reenable local bluetooth
-  echo $(/usr/local/bin/blueutil on)
+
+  echo "Disabling bluetooth for ${remote_host}."
+  ssh "${remote_host}" '/usr/local/bin/blueutil -p 0' || return 1
+
+  echo "Enabling local bluetooth."
+  /usr/local/bin/blueutil on || return 1
+  # Wait 30 seconds for devices to connect with remote machine.
+  /bin/sleep 30
+
+  echo "Re-enabling bluetooth for ${remote_host}."
+  ssh "${remote_host}" '/usr/local/bin/blueutil -p 1' || return 1
+
+  return 0
 }
 
 # Usage: ./btrobber.sh <remote-host> (steal|release)
