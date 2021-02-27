@@ -1,4 +1,5 @@
 # btrobber
 
-A collection of scripts Used to facilitate bluetooth handoff between an iMac in
-TDM and a MacBook Pro.
+A simple script for facilitating bluetooth handoff between a local and remote
+macOS device.
+
